@@ -1,0 +1,81 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Amlanpatra16
+
+//@version=5
+indicator("1/2/3 IC Screener",overlay=true)
+
+no_of_candles_back = input.int(title="How many IC?",defval=1,minval=1,maxval=3)
+i_res = input.timeframe('5', "Timeframe")
+
+
+sym1 = input.symbol("NSE:HDFC","Symbol1")
+sym2 = input.symbol("NSE:HINDALCO","Symbol2")
+sym3 = input.symbol("NSE:AXISBANK","Symbol3")
+sym4 = input.symbol("NSE:WIPRO","Symbol4")
+sym5 = input.symbol("NSE:RELIANCE","Symbol5")
+sym6 = input.symbol("NSE:SUNPHARMA","Symbol6")
+sym7 = input.symbol("NSE:SBIN","Symbol7")
+sym8 = input.symbol("NSE:INFY","Symbol8")
+sym9 = input.symbol("NSE:KOTAKBANK","Symbol9")
+sym10 = input.symbol("NSE:BHARTIARTL","Symbol10")
+sym11 = input.symbol("NSE:AUROPHARMA","Symbol11")
+sym12 = input.symbol("NSE:ICICIBANK","Symbol12")
+sym13 = input.symbol("NSE:LUPIN","Symbol13")
+sym14 = input.symbol("NSE:HCLTECH","Symbol14")
+sym15 = input.symbol("NSE:BPCL","Symbol15")
+sym16 = input.symbol("NSE:TATAMOTORS","Symbol16")
+sym17 = input.symbol("NSE:CIPLA","Symbol17")
+sym18 = input.symbol("NSE:HDFCBANK","Symbol18")
+sym19 = input.symbol("NSE:TORNTPHARM","Symbol19")
+sym20 = input.symbol("BANKNIFTYF2022", "Symbol20")
+
+// 20 more symbols can be added 
+
+// print(string txt) =>
+//     var table t = table.new(position.middle_right, 1, 1)
+//     table.cell(t, 0, 0, txt,text_color=color.white, bgcolor = color.black)
+print(txt) =>
+    input_x_axis = input.string(title="Print label position",defval="Right",options=['Left', 'Center', 'Right'])
+    if input_x_axis == "Left"
+        t = table.new(position.middle_left, 1, 1)
+        table.cell(t, 0, 0, str.tostring(txt),text_color=color.white, bgcolor = color.black)
+    else if (input_x_axis == "Center")
+        t = table.new(position.middle_center, 1, 1)
+        table.cell(t, 0, 0, str.tostring(txt),text_color=color.white, bgcolor = color.black)
+    else
+        t = table.new(position.middle_right, 1, 1)
+        table.cell(t, 0, 0, str.tostring(txt),text_color=color.white, bgcolor = color.black)
+
+
+breakout(sec_name) =>
+    expr = math.abs(open[1]-close[1]) < (high[1]-low[1])/2 ? (math.abs(open[2]-close[2]) < (high[2]-low[2])/2) ?  (math.abs(open[3]-close[3]) < (high[3]-low[3])/2)  ? 3 : 2 : 1 : 0
+    res = (request.security(sec_name, "5", expr))
+    res
+
+final_str = ''
+
+
+final_str := breakout(sym1) >= no_of_candles_back ? (final_str + str.tostring(sym1) + "\n") : final_str
+final_str := breakout(sym2) >= no_of_candles_back ? (final_str + str.tostring(sym2) + "\n") : final_str
+final_str := breakout(sym3) >= no_of_candles_back ? (final_str + str.tostring(sym3) + "\n") : final_str
+final_str := breakout(sym4) >= no_of_candles_back ? (final_str + str.tostring(sym4) + "\n") : final_str
+final_str := breakout(sym5) >= no_of_candles_back ? (final_str + str.tostring(sym5) + "\n") : final_str
+final_str := breakout(sym6) >= no_of_candles_back ? (final_str + str.tostring(sym6) + "\n") : final_str
+final_str := breakout(sym7) >= no_of_candles_back ? (final_str + str.tostring(sym7) + "\n") : final_str
+final_str := breakout(sym8) >= no_of_candles_back ? (final_str + str.tostring(sym8) + "\n") : final_str
+final_str := breakout(sym9) >= no_of_candles_back ? (final_str + str.tostring(sym9) + "\n") : final_str
+final_str := breakout(sym10) >= no_of_candles_back ? (final_str + str.tostring(sym10) + "\n") : final_str
+final_str := breakout(sym11) >= no_of_candles_back ? (final_str + str.tostring(sym11) + "\n") : final_str
+final_str := breakout(sym12) >= no_of_candles_back ? (final_str + str.tostring(sym12) + "\n") : final_str
+final_str := breakout(sym13) >= no_of_candles_back ? (final_str + str.tostring(sym13) + "\n") : final_str
+final_str := breakout(sym14) >= no_of_candles_back ? (final_str + str.tostring(sym14) + "\n") : final_str
+final_str := breakout(sym15) >= no_of_candles_back ? (final_str + str.tostring(sym15) + "\n") : final_str
+final_str := breakout(sym16) >= no_of_candles_back ? (final_str + str.tostring(sym16) + "\n") : final_str
+final_str := breakout(sym17) >= no_of_candles_back ? (final_str + str.tostring(sym17) + "\n") : final_str
+final_str := breakout(sym18) >= no_of_candles_back ? (final_str + str.tostring(sym18) + "\n") : final_str
+final_str := breakout(sym19) >= no_of_candles_back ? (final_str + str.tostring(sym19) + "\n") : final_str
+final_str := breakout(sym20) >= no_of_candles_back ? (final_str + str.tostring(sym20) + "\n") : final_str
+
+
+
+print(str.tostring(no_of_candles_back) + "\n"  + final_str)

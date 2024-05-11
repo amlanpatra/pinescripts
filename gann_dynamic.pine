@@ -1,0 +1,36 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Amlanpatra16
+
+//@version=4
+study("GANN DYNAMIC",overlay = true)
+
+cl_sqrt = round(sqrt(close),2)
+
+deg45_sup = plot(pow((cl_sqrt + 0.25),2), title='GANN DYN SUP 45', color=color.new(#2ECC71, 30))
+deg45_res = plot(pow((cl_sqrt - 0.25),2), title='GANN DYN RES 45', color=color.new(#2ECC71, 30))
+
+deg90_sup = plot(pow((cl_sqrt + 0.5),2),title='GANN DYN SUP 90', color=color.new(#2ECC71, 30))
+deg90_res = plot(pow((cl_sqrt - 0.5),2),title='GANN DYN RES 90', color=color.new(#2ECC71, 30))
+
+deg135_sup = plot(pow((cl_sqrt + 0.75),2),title='GANN DYN SUP 135', color=color.new(#2ECC71, 30))
+deg135_res = plot(pow((cl_sqrt - 0.75),2),title='GANN DYN RES 135', color=color.new(#2ECC71, 30))
+
+deg180_sup = plot(pow((cl_sqrt + 1),2),title='GANN DYN SUP 180', color=color.new(#2ECC71, 30))
+deg180_res = plot(pow((cl_sqrt - 1),2),title='GANN DYN RES 180', color=color.new(#2ECC71, 30))
+
+deg225_sup = plot(pow((cl_sqrt + 1.25),2),title='GANN DYN SUP 225', color=color.new(#2ECC71, 30))
+deg225_res = plot(pow((cl_sqrt - 1.25),2),title='GANN DYN RES 225', color=color.new(#2ECC71, 30))
+
+deg270_sup = plot(pow((cl_sqrt + 1.5),2),title='GANN DYN SUP 270', color=color.new(#2ECC71, 30))
+deg270_res = plot(pow((cl_sqrt - 1.5),2),title='GANN DYN RES 270', color=color.new(#2ECC71, 30))
+
+deg315_sup = plot(pow((cl_sqrt + 1.75),2),title='GANN DYN SUP 315', color=color.new(#2ECC71, 30))
+deg315_res = plot(pow((cl_sqrt - 1.75),2),title='GANN DYN RES 315', color=color.new(#2ECC71, 30))
+
+deg360_sup = plot(pow((cl_sqrt + 2),2),title='GANN DYN SUP 360', color=color.new(#2ECC71, 30))
+deg360_res = plot(pow((cl_sqrt - 2),2),title='GANN DYN RES 360', color=color.new(#2ECC71, 30))
+
+
+
+
+

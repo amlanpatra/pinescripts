@@ -1,0 +1,138 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Amlanpatra16
+
+//@version=5
+indicator("ICMC bo next50 last10 Screener",overlay=true,max_bars_back=100)
+rcnt_bars = input.int(title="Recent Bars",defval=80,minval=1)
+line_width = 2
+i_res = input.timeframe('5', "Timeframe")
+// upto 40 symbols are supported at a time
+
+
+sym1 = input.symbol("NSE:AUROPHARMA","Symbol1")
+sym2 = input.symbol("NSE:BIOCON","Symbol2")
+sym3 = input.symbol("NSE:CADILAHC","Symbol3")
+sym4 = input.symbol("NSE:GLAND","Symbol4")
+sym5 = input.symbol("NSE:LUPIN","Symbol5")
+sym6 = input.symbol("NSE:TORNTPHARM","Symbol6")
+sym7 = input.symbol("NSE:ADANIGREEN","Symbol7")
+sym8 = input.symbol("NSE:ADANITRANS","Symbol8")
+sym9 = input.symbol("NSE:INDIGO","Symbol9")
+sym10 = input.symbol("NSE:INDUSTOWER","Symbol10")
+
+
+
+ic(idx) =>
+    res = (math.abs(open[idx] - close[idx])) <= (high[idx] - low[idx])/2 ? 1 : 0
+    res
+
+isToday(i) =>
+    a = ta.change(time("D"),i) ? 1 : 0
+    a
+noOfBars() =>
+	int counter = 0
+	for i = 1 to 78
+        if isToday(i)
+		    counter := counter + 1
+            // there are 78 5 min candles in a day
+	counter := 78 - counter 
+
+
+// print(string txt) =>
+//     // var table t = table.new(position.middle_right, 1, 1)
+//     t = table.new(position.middle_right, 1, 1)
+//     table.cell(t, 0, 0, txt,text_color=color.white, bgcolor = color.black)
+print(txt) =>
+    input_x_axis = input.string(title="Print label position",defval="Right",options=['Left', 'Center', 'Right'])
+    if input_x_axis == "Left"
+        t = table.new(position.middle_left, 1, 1)
+        table.cell(t, 0, 0, str.tostring(txt),text_color=color.white, bgcolor = color.black)
+    else if (input_x_axis == "Center")
+        t = table.new(position.middle_center, 1, 1)
+        table.cell(t, 0, 0, str.tostring(txt),text_color=color.white, bgcolor = color.black)
+    else
+        t = table.new(position.middle_right, 1, 1)
+        table.cell(t, 0, 0, str.tostring(txt),text_color=color.white, bgcolor = color.black)
+
+del_lines() =>
+    a_allLines = line.all
+    if array.size(a_allLines) > 0
+        for i = 0 to array.size(a_allLines) - 1
+            line.delete(array.get(a_allLines, i))
+del_last2lines() =>
+    a_allLines = line.all
+    if array.size(a_allLines) >= 2
+        // for i = 0 to array.size(a_allLines) - 1
+        line.delete(array.pop(a_allLines))
+        line.delete(array.pop(a_allLines))
+
+
+find_nextIC(idx) =>
+    result = 0
+    for i = idx to 1
+        if(ic(i))
+            result := i
+            break
+    result
+
+del_table() =>
+    a_allTables = table.all
+    if array.size(a_allTables) > 0
+        for i = 0 to array.size(a_allTables) - 1
+            table.delete(array.get(a_allTables, i))
+
+
+
+breakout_screener() =>
+    bars = noOfBars()
+    recent_bars = 0
+    if(rcnt_bars > bars)
+        recent_bars := bars
+    recent_bars := find_nextIC(recent_bars)
+    resistance_ic = high[recent_bars]
+    support_ic = low[recent_bars]
+    start_idx = recent_bars
+
+    final_breakout = 0
+    for i = recent_bars to 1
+        if (ic(i))
+            if(high[i] >= resistance_ic)
+                resistance_ic := high[i]
+            if(low[i] <= support_ic)
+                support_ic := low[i]
+            final_breakout := 0
+        else if (not (ic(i)))
+            if ((close[i] <= resistance_ic) and (close[i] >= support_ic))   // mc but not breakout
+                final_breakout := 0
+                continue
+            else  // mc breakout candle
+                final_breakout := 1
+                if(find_nextIC(i) == 0)
+                    continue
+                else
+                    start_idx := find_nextIC(i)
+                    resistance_ic := high[start_idx]
+                    support_ic := low[start_idx]
+
+    final_breakout  // return 1 if breakout, 0 if no breakout
+
+// test_Str = ""
+// test_Str := request.security(test_Str,"5",breakout_screener()) == 1 ? (test_Str + str.tostring(sym1)) : test_Str
+
+
+final_str = ""
+
+
+final_str := request.security(sym1,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym1) + "\n") : final_str
+final_str := request.security(sym2,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym2) + "\n") : final_str
+final_str := request.security(sym3,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym3) + "\n") : final_str
+final_str := request.security(sym4,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym4) + "\n") : final_str
+final_str := request.security(sym5,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym5) + "\n") : final_str
+final_str := request.security(sym6,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym6) + "\n") : final_str
+final_str := request.security(sym7,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym7) + "\n") : final_str
+final_str := request.security(sym8,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym8) + "\n") : final_str
+final_str := request.security(sym9,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym9) + "\n") : final_str
+final_str := request.security(sym10,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym10) + "\n") : final_str
+
+print(final_str)
+

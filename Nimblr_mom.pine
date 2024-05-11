@@ -1,0 +1,28 @@
+// Thighs source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Amlanpatra16
+
+//@version=4
+study("Nimblr ICMC",overlay=true)
+
+showlast = input(title="Show Last", type=input.integer,defval=300,minval=1)
+
+
+mom_up = ((close - open)*2) > (high - low) ? 1 : 0
+plotshape(mom_up,title= "Bull Mom", style=shape.labelup, color=color.lime,location=location.belowbar, show_last=showlast)
+
+
+mom_down = ((open - close)*2) > (high - low) ? 1 : 0
+plotshape(mom_down,title= "Bear Mom", style=shape.labeldown, color=color.orange,location=location.abovebar,show_last=showlast)
+
+
+op = security(syminfo.tickerid, "D", open)
+
+tiny_ic = ((((high - low)/op)*100) <= 0.15 and not(mom_down) and not(mom_up)) ? 1 : 0
+plotshape(tiny_ic,title= "Tiny IC", style=shape.diamond, color=color.white,location=location.belowbar,show_last=showlast)
+
+
+any_ic = (not(mom_down) and not(mom_up)) ? 1 : 0
+plotshape(any_ic,title= "All IC", style=shape.xcross, color=color.aqua,location=location.belowbar,show_last=showlast,text="IC")
+
+
+

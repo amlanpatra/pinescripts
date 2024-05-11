@@ -1,0 +1,72 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Amlanpatra16
+
+//@version=5
+indicator("Nimblr full mod",overlay=true)
+
+
+
+showlast = input.int(title="Show Last",defval=100,minval=1)
+
+mom_up(a) => ((close[a] - open[a])*2) > (high[a] - low[a]) ? 1 : 0
+mom_down(a) => ((open[a] - close[a])*2) > (high[a] - low[a]) ? 1 : 0
+
+indecisive_buy_candle(a) => (((close[a] - open[a]) > 0) ? (((close[a] - open[a]) < ((high[a] - low[a])* 0.5)) ? (((open[a] - low[a]) > (high[a] - close[a])) ? 1 : 0) : 0) : 0)
+indecisive_sell_candle(a) => (((open[a] - close[a]) > 0) ? ((open[a] - close[a]) < ((high[a] - low[a])* 0.5) ? ((high[a] - open[a]) > (close[a] - low[a])) ? 1 : 0 : 0) : 0)
+
+buy_indicator(a) => 
+    p = indecisive_buy_candle(a+1) //just previous candle is indecisive buy and before that one is none
+    
+    m = indecisive_sell_candle(a+2)
+    w = indecisive_buy_candle(a+2)
+
+    q = (( math.abs(volume[a+1]) < math.abs(volume[a+2])) ? 1 : 0)
+
+    x = mom_up(a+2)
+    y = mom_down(a+2)
+    
+    z = ((p == 1) ? (((m + w + q + x + y) == 0 ) ? 1 : 0) : 0)
+
+
+
+sell_indicator(a) => 
+    p = indecisive_sell_candle(a+1) //just previous candle is indecisive sell and before that one is none
+    
+    m = indecisive_sell_candle(a+2)
+    w = indecisive_buy_candle(a+2)
+
+    q = (( math.abs(volume[a+1]) < math.abs(volume[a+2])) ? 1 : 0)
+    
+    x = mom_up(a+2)
+    y = mom_down(a+2)
+    
+    z = ((p == 1) ? (((m + w + q + x + y) == 0 ) ? 1 : 0) : 0)
+
+
+
+
+
+// alerts
+if (buy_indicator(0) == 1)
+    alert("Buy " + str.tostring(syminfo.ticker), alert.freq_once_per_bar)
+
+if (sell_indicator(0) == 1)
+    alert("Sell " + str.tostring(syminfo.ticker), alert.freq_once_per_bar)
+
+plotshape(mom_up(0),title= "Bull Mom", style=shape.labelup, color=color.lime,location=location.belowbar, show_last=showlast)
+plotshape(mom_down(0),title= "Bear Mom", style=shape.labeldown, color=color.orange,location=location.abovebar,show_last=showlast)
+plotshape(indecisive_buy_candle(0),title= "Bull Indecisive", style=shape.circle, color=color.white,location=location.belowbar,show_last=showlast)
+plotshape(indecisive_sell_candle(0),title= "Bear Indecisive", style=shape.circle, color=color.white,location=location.abovebar,show_last=showlast)
+
+plotshape(buy_indicator(0),text="Buy",location=location.belowbar,color=color.green,show_last=showlast)
+plotshape(sell_indicator(0),text="Sell",location=location.abovebar,color=color.red,show_last=showlast)
+
+
+
+plot_high = (mom_up(0) or indecisive_buy_candle(0)) == 1 ? 1 : 0
+plot_low = (mom_down(0) or indecisive_sell_candle(0)) == 1 ? 1 : 0
+
+
+final_plot = ((plot_high == 1) ? (high[0]) : ((plot_low == 1) ? (low[0]) : (na)))
+
+plot(final_plot)

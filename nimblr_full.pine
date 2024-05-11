@@ -1,0 +1,33 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Amlanpatra16
+
+//@version=5
+indicator("Nimblr full",overlay=true)
+
+// This is for spotting reversals ie. double momentum candlesticks
+
+showlast = input.int(title="Show Last",defval=10,minval=1)
+
+mom_up(a) => ((close[a] - open[a])*2) > (high[a] - low[a]) ? 1 : 0
+mom_down(a) => ((open[a] - close[a])*2) > (high[a] - low[a]) ? 1 : 0
+
+
+indecisive_buy_candle(a) => (((close[a] - open[a]) > 0) ? (((close[a] - open[a]) < ((high[a] - low[a])* 0.5)) ? (((open[a] - low[a]) > (high[a] - close[a])) ? 1 : 0) : 0) : 0)
+indecisive_sell_candle(a) => (((open[a] - close[a]) > 0) ? ((open[a] - close[a]) < ((high[a] - low[a])* 0.5) ? ((high[a] - open[a]) > (close[a] - low[a])) ? 1 : 0 : 0) : 0)
+
+
+
+// mom_up = ((close - open)*2) > (high - low) ? 1 : 0
+plotshape(mom_up(0),title= "Bull Mom", style=shape.labelup, color=color.lime,location=location.belowbar, show_last=showlast)
+
+// mom_down = ((open - close)*2) > (high - low) ? 1 : 0
+plotshape(mom_down(0),title= "Bear Mom", style=shape.labeldown, color=color.orange,location=location.abovebar,show_last=showlast)
+
+
+// indecisive_buy_candle = (((close - open) > 0) ? (((close - open) < ((high - low)* 0.5)) ? (((open - low) > (high - close)) ? 1 : 0) : 0) : 0)
+plotshape(indecisive_buy_candle(0),title= "Bull Indecisive", style=shape.circle, color=color.white,location=location.belowbar,show_last=showlast)
+
+
+// indecisive_sell_candle= (((open - close) > 0) ? ((open - close) < ((high - low)* 0.5) ? ((high - open) > (close - low)) ? 1 : 0 : 0) : 0)
+plotshape(indecisive_sell_candle(0),title= "Bear Indecisive", style=shape.circle, color=color.white,location=location.abovebar,show_last=showlast)
+

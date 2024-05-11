@@ -1,0 +1,194 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Amlanpatra16
+
+//@version=5
+indicator("ICMC bo fo_fmcg Screener_strict_live",overlay=true,max_bars_back=100)
+rcnt_bars = input.int(title="Recent Bars",defval=80,minval=1)
+line_width = 2
+i_res = input.timeframe('5', "Timeframe")
+// upto 40 symbols are supported at a time
+
+sym1 = input.symbol("NSE:ASIANPAINT","Symbol1")
+sym2 = input.symbol("NSE:BALRAMCHIN","Symbol2")
+sym3 = input.symbol("NSE:BATAINDIA","Symbol3")
+sym4 = input.symbol("NSE:BERGEPAINT","Symbol4")
+sym5 = input.symbol("NSE:BRITANNIA","Symbol5")
+sym6 = input.symbol("NSE:COLPAL","Symbol6")
+sym7 = input.symbol("NSE:CROMPTON","Symbol7")
+sym8 = input.symbol("NSE:DABUR","Symbol8")
+sym9 = input.symbol("NSE:DIXON","Symbol9")
+sym10 = input.symbol("NSE:GODREJCP","Symbol10")
+sym11 = input.symbol("NSE:HAVELLS","Symbol11")
+sym12 = input.symbol("NSE:HINDUNILVR","Symbol12")
+sym13 = input.symbol("NSE:ITC","Symbol13")
+sym14 = input.symbol("NSE:MARICO","Symbol14")
+sym15 = input.symbol("NSE:MCDOWELL_N","Symbol15")
+sym16 = input.symbol("NSE:NESTLEIND","Symbol16")
+sym17 = input.symbol("NSE:TATACONSUM","Symbol17")
+sym18 = input.symbol("NSE:TITAN","Symbol18")
+sym19 = input.symbol("NSE:UBL","Symbol19")
+sym20 = input.symbol("NSE:VOLTAS","Symbol20")
+sym21 = input.symbol("NSE:WHIRLPOOL","Symbol21")
+
+
+
+ic(idx) =>
+    res = (math.abs(open[idx] - close[idx])) <= (high[idx] - low[idx])/2 ? 1 : 0
+    res
+
+isToday(i) =>
+    a = ta.change(time("D"),i) ? 1 : 0
+    a
+noOfBars() =>
+	int counter = 0
+	for i = 1 to 78
+        if isToday(i)
+		    counter := counter + 1
+            // there are 78 5 min candles in a day
+	counter := 78 - counter 
+
+
+// print(string txt) =>
+//     // var table t = table.new(position.middle_right, 1, 1)
+//     t = table.new(position.middle_right, 1, 1)
+//     table.cell(t, 0, 0, txt,text_color=color.white, bgcolor = color.black)
+print(txt) =>
+    input_x_axis = input.string(title="Print label xposition",defval="Right",options=['Left', 'Center', 'Right'])
+    input_y_axis = input.string(title="Print label yposition",defval="Middle",options=['Top', 'Middle', 'Bottom'])
+    
+    if input_y_axis == "Top"
+        if input_x_axis == "Left"
+            t = table.new(position.top_left, 1, 1)
+            table.cell(t, 0, 0, str.tostring(txt),text_color=color.white, bgcolor = color.black)
+        else if (input_x_axis == "Center")
+            t = table.new(position.top_center, 1, 1)
+            table.cell(t, 0, 0, str.tostring(txt),text_color=color.white, bgcolor = color.black)
+        else
+            t = table.new(position.top_right, 1, 1)
+            table.cell(t, 0, 0, str.tostring(txt),text_color=color.white, bgcolor = color.black)
+
+
+    else if input_y_axis == "Middle"
+        if input_x_axis == "Left"
+            t = table.new(position.middle_left, 1, 1)
+            table.cell(t, 0, 0, str.tostring(txt),text_color=color.white, bgcolor = color.black)
+        else if (input_x_axis == "Center")
+            t = table.new(position.middle_center, 1, 1)
+            table.cell(t, 0, 0, str.tostring(txt),text_color=color.white, bgcolor = color.black)
+        else
+            t = table.new(position.middle_right, 1, 1)
+            table.cell(t, 0, 0, str.tostring(txt),text_color=color.white, bgcolor = color.black)
+
+    if input_y_axis == "Bottom"
+        if input_x_axis == "Left"
+            t = table.new(position.bottom_left, 1, 1)
+            table.cell(t, 0, 0, str.tostring(txt),text_color=color.white, bgcolor = color.black)
+        else if (input_x_axis == "Center")
+            t = table.new(position.bottom_center, 1, 1)
+            table.cell(t, 0, 0, str.tostring(txt),text_color=color.white, bgcolor = color.black)
+        else
+            t = table.new(position.bottom_right, 1, 1)
+            table.cell(t, 0, 0, str.tostring(txt),text_color=color.white, bgcolor = color.black)
+
+del_lines() =>
+    a_allLines = line.all
+    if array.size(a_allLines) > 0
+        for i = 0 to array.size(a_allLines) - 1
+            line.delete(array.get(a_allLines, i))
+del_last2lines() =>
+    a_allLines = line.all
+    if array.size(a_allLines) >= 2
+        // for i = 0 to array.size(a_allLines) - 1
+        line.delete(array.pop(a_allLines))
+        line.delete(array.pop(a_allLines))
+
+
+find_nextIC(idx) =>
+    result = 0
+    for i = idx to 1
+        if(ic(i))
+            result := i
+            break
+    result
+
+del_table() =>
+    a_allTables = table.all
+    if array.size(a_allTables) > 0
+        for i = 0 to array.size(a_allTables) - 1
+            table.delete(array.get(a_allTables, i))
+
+
+breakout_screener() =>
+    bars = noOfBars()
+    is_mom_and_outside_range = 0 
+    recent_bars = 0
+    if(rcnt_bars > bars)
+        recent_bars := bars
+    recent_bars := find_nextIC(recent_bars)
+    resistance_ic = high[recent_bars]
+    support_ic = low[recent_bars]
+    start_idx = recent_bars
+
+    final_breakout = 0
+    for i = recent_bars to 0
+    // for i = recent_bars to 0
+        if (ic(i))
+            is_mom_and_outside_range := 0
+            if(high[i] >= resistance_ic)
+                resistance_ic := high[i]
+            if(low[i] <= support_ic)
+                support_ic := low[i]
+            final_breakout := 0
+        else if (not (ic(i)))
+            if ((close[i] <= resistance_ic) and (close[i] >= support_ic))   // mc but not breakout
+                final_breakout := 0
+                // continue
+            else  // mc breakout candle
+                if ((final_breakout == 1) or is_mom_and_outside_range == 1)
+                    final_breakout := 0
+                else
+                    final_breakout := 1
+                    is_mom_and_outside_range := 1
+                if(find_nextIC(i) == 0)
+                    continue
+                else
+                    start_idx := find_nextIC(i)
+                    resistance_ic := high[start_idx]
+                    support_ic := low[start_idx]
+
+    final_breakout  // return 1 if breakout, 0 if no breakout
+
+
+// test_Str = ""
+// test_Str := request.security(test_Str,"5",breakout_screener()) == 1 ? (test_Str + str.tostring(sym1)) : test_Str
+
+
+final_str = "Fmcg :\n"
+
+
+final_str := request.security(sym1,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym1) + "\n") : final_str
+final_str := request.security(sym2,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym2) + "\n") : final_str
+final_str := request.security(sym3,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym3) + "\n") : final_str
+final_str := request.security(sym4,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym4) + "\n") : final_str
+final_str := request.security(sym5,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym5) + "\n") : final_str
+final_str := request.security(sym6,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym6) + "\n") : final_str
+final_str := request.security(sym7,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym7) + "\n") : final_str
+final_str := request.security(sym8,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym8) + "\n") : final_str
+final_str := request.security(sym9,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym9) + "\n") : final_str
+final_str := request.security(sym10,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym10) + "\n") : final_str
+final_str := request.security(sym11,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym11) + "\n") : final_str
+final_str := request.security(sym12,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym12) + "\n") : final_str
+final_str := request.security(sym13,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym13) + "\n") : final_str
+final_str := request.security(sym14,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym14) + "\n") : final_str
+final_str := request.security(sym15,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym15) + "\n") : final_str
+final_str := request.security(sym16,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym16) + "\n") : final_str
+final_str := request.security(sym17,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym17) + "\n") : final_str
+final_str := request.security(sym18,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym18) + "\n") : final_str
+final_str := request.security(sym19,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym19) + "\n") : final_str
+final_str := request.security(sym20,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym20) + "\n") : final_str
+final_str := request.security(sym21,i_res,breakout_screener()) == 1 ? (final_str + str.tostring(sym21) + "\n") : final_str
+
+
+
+print(final_str)
+

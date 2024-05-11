@@ -1,0 +1,56 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Amlanpatra16
+
+//@version=4
+study("GANN STATIC",overlay=true)
+
+a = array.new_float(1)
+n = 0
+// price = input(title="Price", type=input.float, defval=17602)
+price = close[0]
+// plot(x, color=color.new(#F4D03F, 10))
+for i = 10 to 100
+    v = 4*(pow((i-1),2)) - 3 * (i-1) + 1
+    if(v>= price)
+        n := i-2
+        break
+    
+
+n:= n+1
+
+deg180_1 =  4*(pow((n-1),2)) - 3 * (n-1) + 1
+deg135_1 = 4*(pow(n,2)) - 10*n + 7
+deg90_1 = 4*(pow(n,2)) - 9*n + 6
+deg45_1 = 4*(pow(n-1,2)) + 1
+deg360_1 = 4*(pow(n,2)) - 7*n + 4
+deg315_1 = 4*(pow(n,2)) - 6*n + 3
+deg270_1 = 4*(pow(n-1,2)) + 3*(n-1) + 1
+deg225_1 = pow((2*(n-1)+1),2)
+
+n := n+1
+
+deg180_2 =  4*(pow((n-1),2)) - 3 * (n-1) + 1
+deg135_2 = 4*(pow(n,2)) - 10*n + 7
+deg90_2 = 4*(pow(n,2)) - 9*n + 6
+deg45_2 = 4*(pow(n-1,2)) + 1
+deg360_2 = 4*(pow(n,2)) - 7*n + 4
+deg315_2 = 4*(pow(n,2)) - 6*n + 3
+deg270_2 = 4*(pow(n-1,2)) + 3*(n-1) + 1
+deg225_2 = pow((2*(n-1)+1),2)
+
+plot(deg180_1 ,color=color.new(#E7BB0D,10))
+plot(deg135_1 ,color=color.new(#E7BB0D,10))
+plot(deg90_1 ,color=color.new(#E7BB0D,10))
+plot(deg45_1 ,color=color.new(#E7BB0D,10))
+plot(deg360_1 ,color=color.new(#E7BB0D,10))
+plot(deg315_1 ,color=color.new(#E7BB0D,10))
+plot(deg270_1 ,color=color.new(#E7BB0D,10))
+plot(deg225_1 ,color=color.new(#E7BB0D,10))
+plot(deg180_2 ,color=color.new(#E7BB0D,10))
+plot(deg135_2 ,color=color.new(#E7BB0D,10))
+plot(deg90_2 ,color=color.new(#E7BB0D,10))
+plot(deg45_2 ,color=color.new(#E7BB0D,10))
+plot(deg360_2 ,color=color.new(#E7BB0D,10))
+plot(deg315_2 ,color=color.new(#E7BB0D,10))
+plot(deg270_2 ,color=color.new(#E7BB0D,10))
+plot(deg225_2 ,color=color.new(#E7BB0D,10))

@@ -1,0 +1,47 @@
+// print(string txt) =>
+//     var table t = table.new(position.middle_right, 1, 1)
+//     table.cell(t, 0, 0, txt, bgcolor = color.yellow)
+
+
+
+//@version=5
+indicator(title="print test",overlay=true,max_bars_back = 500)
+
+
+print(txt) =>
+    input_x_axis = input.string(title="Print label xposition",defval="Right",options=['Left', 'Center', 'Right'])
+    input_y_axis = input.string(title="Print label yposition",defval="Middle",options=['Top', 'Middle', 'Bottom'])
+    
+    if input_y_axis == "Top"
+        if input_x_axis == "Left"
+            t = table.new(position.top_left, 1, 1)
+            table.cell(t, 0, 0, str.tostring(txt),text_color=color.white, bgcolor = color.black)
+        else if (input_x_axis == "Center")
+            t = table.new(position.top_center, 1, 1)
+            table.cell(t, 0, 0, str.tostring(txt),text_color=color.white, bgcolor = color.black)
+        else
+            t = table.new(position.top_right, 1, 1)
+            table.cell(t, 0, 0, str.tostring(txt),text_color=color.white, bgcolor = color.black)
+
+
+    else if input_y_axis == "Middle"
+        if input_x_axis == "Left"
+            t = table.new(position.middle_left, 1, 1)
+            table.cell(t, 0, 0, str.tostring(txt),text_color=color.white, bgcolor = color.black)
+        else if (input_x_axis == "Center")
+            t = table.new(position.middle_center, 1, 1)
+            table.cell(t, 0, 0, str.tostring(txt),text_color=color.white, bgcolor = color.black)
+        else
+            t = table.new(position.middle_right, 1, 1)
+            table.cell(t, 0, 0, str.tostring(txt),text_color=color.white, bgcolor = color.black)
+
+    if input_y_axis == "Bottom"
+        if input_x_axis == "Left"
+            t = table.new(position.bottom_left, 1, 1)
+            table.cell(t, 0, 0, str.tostring(txt),text_color=color.white, bgcolor = color.black)
+        else if (input_x_axis == "Center")
+            t = table.new(position.bottom_center, 1, 1)
+            table.cell(t, 0, 0, str.tostring(txt),text_color=color.white, bgcolor = color.black)
+        else
+            t = table.new(position.bottom_right, 1, 1)
+            table.cell(t, 0, 0, str.tostring(txt),text_color=color.white, bgcolor = color.black)

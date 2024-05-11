@@ -1,0 +1,35 @@
+//@version=5
+indicator(title="test zigzag",overlay=true,max_bars_back = 500)
+prd1 = 8
+
+print(txt) =>
+    // var table t = table.new(position.middle_right, 1, 1)
+    t = table.new(position.middle_right, 1, 1)
+    // table.cell(t, 0, 0, txt,text_color=color.white, bgcolor = color.black)
+    table.cell(t, 0, 0, str.tostring(txt),text_color=color.white, bgcolor = color.black)
+
+
+
+// print("highestbars(high, prd1) : "+ tostring(highestbars(high, prd1)) + "\n lowestbars(low, prd1) : " + tostring(lowestbars(low, prd1)))
+i_res = input.timeframe('5', "Timeframe")
+back_candles = input.int(title="H/L within how many candles", defval=1, minval=0, maxval=8)
+back_candles := (back_candles*-1)
+
+strict_back_candles = input.bool(true, "H/L strictly/precisely at n'th candle as per above")
+
+
+high_or_low() =>
+    res = ""
+    if strict_back_candles
+        if (ta.highestbars(high, prd1) == back_candles)
+            res = "high"
+        else if ((ta.lowestbars(low, prd1)) == back_candles)
+            res = "low"
+    else
+        if (ta.highestbars(high, prd1) >= back_candles)
+            res = "high"
+        else if ((ta.lowestbars(low, prd1)) >= back_candles)
+            res = "low"
+    res
+
+print(high_or_low())

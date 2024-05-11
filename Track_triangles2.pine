@@ -1,0 +1,227 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Amlanpatra16
+// FIXME: this has hammer
+//@version=5
+indicator("Track Triangles 2",overlay=true,max_bars_back=100) 
+
+
+showlast = input.int(title="Show Last",defval=74,minval=1)
+// recent_candle = input.int(title="Recent Candle",defval=2,minval=0)
+line_width = input.int(title="Line Width",defval=1,minval=1)
+
+mom_up(a) => ((close[a] - open[a])*2) > (high[a] - low[a]) ? 1 : 0
+mom_down(a) => ((open[a] - close[a])*2) > (high[a] - low[a]) ? 1 : 0
+
+indecisive_buy_candle(a) => (((close[a] - open[a]) > 0) ? (((close[a] - open[a]) < ((high[a] - low[a])* 0.5)) ? (((open[a] - low[a]) > (high[a] - close[a])) ? 1 : 0) : 0) : 0)
+indecisive_sell_candle(a) => (((open[a] - close[a]) > 0) ? ((open[a] - close[a]) < ((high[a] - low[a])* 0.5) ? ((high[a] - open[a]) > (close[a] - low[a])) ? 1 : 0 : 0) : 0)
+
+hammer_candle(a) => (((close[a] - open[a]) > 0) ? (((close[a] - open[a]) < ((high[a] - low[a])* 0.5)) ? ((close[a] == high[a]) ? 1 : 0) : 0) : 0)
+inverted_hammer_candle(a) => (((open[a] - close[a]) > 0) ? ((open[a] - close[a]) < ((high[a] - low[a])* 0.5) ? (close[a] == low[a]) ? 1 : 0 : 0) : 0)
+
+plotshape(mom_up(0),title= "Bull Mom", style=shape.labelup, color=color.lime,location=location.belowbar, show_last=showlast)
+plotshape(mom_down(0),title= "Bear Mom", style=shape.labeldown, color=color.orange,location=location.abovebar,show_last=showlast)
+// plotshape(indecisive_buy_candle(0),title= "Bull Indecisive", style=shape.circle, color=color.white,location=location.belowbar,show_last=showlast)
+// plotshape(indecisive_sell_candle(0),title= "Bear Indecisive", style=shape.circle, color=color.white,location=location.abovebar,show_last=showlast)
+plotshape(hammer_candle(0),title= "Hammer", style=shape.circle, color=color.white,location=location.belowbar,show_last=showlast)
+plotshape(inverted_hammer_candle(0),title= "Inverted Hammer", style=shape.circle, color=color.white,location=location.abovebar,show_last=showlast)
+
+//TODO: bar counter
+isToday(i) =>
+    a = ta.change(time("D"),i) ? 1 : 0
+    a
+noOfBars() =>
+	int counter = 0
+	for i = 1 to 78
+        if isToday(i)
+		    counter := counter + 1
+            // there are 78 5 min candles in a day
+	counter := 78 - counter 
+
+
+print(string txt) =>
+    var table t = table.new(position.middle_right, 1, 1)
+    table.cell(t, 0, 0, txt, bgcolor = color.yellow)
+
+
+
+
+final_plot(x) =>
+    // plot_high = (mom_up(x) or indecisive_buy_candle(x)) == 1 ? 1 : 0
+    // plot_low = (mom_down(x) or indecisive_sell_candle(x)) == 1 ? 1 : 0
+    plot_high = (mom_up(x) or hammer_candle(x)) == 1 ? 1 : 0
+    plot_low = (mom_down(x) or inverted_hammer_candle(x)) == 1 ? 1 : 0
+    result = ((plot_high == 1) ? (1) : ((plot_low == 1) ? (-1) : (0)))
+    result
+
+
+bars_old = noOfBars()
+
+// function 
+find(old_x) =>
+
+    initial_direction_value = final_plot(old_x)     // +1 or -1
+    // if(direction_value == 1)
+    final_direction_value = (-1) * initial_direction_value
+
+    int counter = 0
+    x = old_x
+    x_copy = x
+
+    int final_direction_candle = -1
+
+    // x := x - 1
+    
+    // while ((final_plot(x) != initial_direction_value) and (x > 0))
+    while(x > 0)
+        if ((final_plot(x) == initial_direction_value) and (counter != 0))
+            break
+        if(final_plot(x) == final_direction_value)
+            final_direction_candle := x
+            counter := counter + 1
+        x := x - 1
+        
+    final_direction_candle
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+plotly() =>
+    // bars = 74
+    bars = bars_old
+
+    end_mom = 0
+
+    while(final_plot(end_mom) == 0)
+        end_mom := end_mom + 1
+
+
+
+    while(final_plot(bars) == 0)
+        bars := bars - 1
+    
+    first_candle = final_plot(bars)
+    prev_candle = bars
+    high_candle = bars    // new
+    low_candle = bars     // new
+
+    while(final_plot(high_candle) != 1)
+        high_candle := high_candle - 1
+
+    while(final_plot(low_candle) != -1)
+        low_candle := low_candle - 1
+   
+    // print("End mom : " + str.tostring(end_mom) + "\nFirst candle : " + str.tostring(first_candle) + "\nCurrent Bars : " + str.tostring(bars) + "\nTotal Bars : " + str.tostring(bars_old))// +  "\n"+ str.tostring(find(12)))
+
+    a_allLines = line.all
+    if array.size(a_allLines) > 0
+        for i = 0 to array.size(a_allLines) - 1
+            line.delete(array.get(a_allLines, i))
+
+
+    if(first_candle == 1)
+
+        while(bars > end_mom)
+        // while(bars > recent_candle)
+        // while((high_candle > end_mom) and (low_candle > end_mom))
+            if (find(high_candle) != -1)
+                low_candle := find(high_candle)
+                bars := low_candle
+                if bars <= 0
+                    break
+            else 
+                // bars := end_mom
+            // //     // high_candle := find(low_candle)
+            // //     // continue
+            //     if bars > end_mom
+                bars := bars - 1
+            //     else 
+            //         break
+                continue
+                // break
+            line.new(bar_index - high_candle, high[high_candle], bar_index - low_candle, low[low_candle], color = color.white, width = line_width)
+            
+            if(find(low_candle) != -1)
+                high_candle := find(low_candle)
+                bars := high_candle
+                if bars <= 0
+                    break
+            else
+                // bars := end_mom
+            //     // low_candle := find(high_candle)
+            //     // continue
+                // if bars > end_mom
+                bars := bars - 1
+                // else 
+                //     break
+                continue
+                // break
+            line.new(bar_index - low_candle, low[low_candle], bar_index - high_candle, high[high_candle], color = color.white, width = line_width)
+
+    else if(first_candle == -1)
+
+        while(bars > end_mom)
+        // while(bars > recent_candle)
+            if (find(low_candle) != -1)
+                high_candle := find(low_candle)
+                bars := high_candle
+                if bars <= 0
+                    break
+                else
+                    // bars := end_mom
+                    // if bars > end_mom
+                    bars := bars - 1
+                    // else 
+                    //     break
+                    continue
+                    // break
+            line.new(bar_index - low_candle, low[low_candle], bar_index - high_candle, high[high_candle], color = color.white, width = line_width) 
+
+            if(find(high_candle) != -1)
+                low_candle := find(high_candle)
+                bars := low_candle
+                if bars <= 0
+                    break
+                else
+                    // bars := end_mom
+                    // if bars > end_mom
+                    bars := bars - 1
+                    // else 
+                    //     break
+                    continue
+                    // break
+            line.new(bar_index - high_candle, high[high_candle], bar_index - low_candle, low[low_candle], color = color.white, width = line_width)
+
+
+
+
+
+             
+
+
+
+
+                
+
+if barstate.islast
+    plotly()
+
+
+

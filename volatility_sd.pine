@@ -1,0 +1,69 @@
+
+sup_0236 = price - std_1 * 0.236
+res_0236 = price + std_1 * 0.236
+
+sup_0382 = price - std_1 * 0.382
+res_0382 = price + std_1 * 0.382
+
+
+sup_050 = price - std_1 * 0.50
+res_050 = price + std_1 * 0.50
+
+sup_0618 = price - std_1 * 0.618
+res_0618 = price + std_1 * 0.618
+
+sup_0786 = price - std_1 * 0.786
+res_0786 = price + std_1 * 0.786
+
+sup_01 = price - std_1 * 1
+res_01 = price + std_1 * 1
+
+sup_01236 = price - std_1 * 1.236
+res_01236 = price + std_1 * 1.236
+
+sup_01382 = price - std_1 * 1.382
+res_01382 = price + std_1 * 1.382
+
+sup_0150 = price - std_1 * 1.50
+res_0150 = price + std_1 * 1.50
+
+sup_01618 = price - std_1 * 1.618
+res_01618 = price + std_1 * 1.618
+
+sup_01786 = price - std_1 * 1.786
+res_01786 = price + std_1 * 1.786
+
+
+sup_02 = price - std_1 * 2
+res_02 = price + std_1 * 2
+
+plot(sup_0236 ,color=color.new(#28B463,10),style=plot.style_circles)//,show_last= 10)
+plot(sup_0382 ,color=color.new(#28B463,10),style=plot.style_circles)
+plot(sup_050 ,color=color.new(#28B463,10),style=plot.style_circles)
+plot(sup_0618 ,color=color.new(#28B463,10),style=plot.style_circles)
+plot(sup_0786 ,color=color.new(#28B463,10),style=plot.style_circles)
+plot(sup_01 ,color=color.new(#28B463,10),style=plot.style_circles)
+plot(sup_01236 ,color=color.new(#28B463,10),style=plot.style_circles)
+plot(sup_01382 ,color=color.new(#28B463,10),style=plot.style_circles)
+plot(sup_0150 ,color=color.new(#28B463,10),style=plot.style_circles)
+plot(sup_01618 ,color=color.new(#28B463,10),style=plot.style_circles)
+plot(sup_01786 ,color=color.new(#28B463,10),style=plot.style_circles)
+plot(sup_02 ,color=color.new(#28B463,10),style=plot.style_circles)
+
+plot(res_0236 ,color=color.new(#E74C3C,10),style=plot.style_circles)//,show_last= 10)
+plot(res_0382 ,color=color.new(#E74C3C,10),style=plot.style_circles)
+plot(res_050 ,color=color.new(#E74C3C,10),style=plot.style_circles)
+plot(res_0618 ,color=color.new(#E74C3C,10),style=plot.style_circles)
+plot(res_0786 ,color=color.new(#E74C3C,10),style=plot.style_circles)
+plot(res_01 ,color=color.new(#E74C3C,10),style=plot.style_circles)
+plot(res_01236 ,color=color.new(#E74C3C,10),style=plot.style_circles)
+plot(res_01382 ,color=color.new(#E74C3C,10),style=plot.style_circles)
+plot(res_0150 ,color=color.new(#E74C3C,10),style=plot.style_circles)
+plot(res_01618 ,color=color.new(#E74C3C,10),style=plot.style_circles)
+plot(res_01786 ,color=color.new(#E74C3C,10),style=plot.style_circles)
+plot(res_02 ,color=color.new(#E74C3C,10),style=plot.style_circles)
+
+
+//support #28B463
+//res #E74C3C
+

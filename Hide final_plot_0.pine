@@ -1,0 +1,55 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Amlanpatra16
+
+//@version=5
+indicator("Hide final_plot_0",overlay=true,max_bars_back=100) 
+
+transparency = input.int(title="Transparency of Candles" ,defval=30,minval=0,maxval=100)
+
+showlast = input.int(title="Show Last",defval=74,minval=1)
+// recent_candle = input.int(title="Recent Candle",defval=2,minval=0)
+line_width = input.int(title="Line Width",defval=1,minval=1)
+
+mom_up(a) => ((close[a] - open[a])*2) > (high[a] - low[a]) ? 1 : 0
+mom_down(a) => ((open[a] - close[a])*2) > (high[a] - low[a]) ? 1 : 0
+
+indecisive_buy_candle(a) => (((close[a] - open[a]) > 0) ? (((close[a] - open[a]) < ((high[a] - low[a])* 0.5)) ? (((open[a] - low[a]) > (high[a] - close[a])) ? 1 : 0) : 0) : 0)
+indecisive_sell_candle(a) => (((open[a] - close[a]) > 0) ? ((open[a] - close[a]) < ((high[a] - low[a])* 0.5) ? ((high[a] - open[a]) > (close[a] - low[a])) ? 1 : 0 : 0) : 0)
+
+// plotshape(mom_up(0),title= "Bull Mom", style=shape.labelup, color=color.lime,location=location.belowbar, show_last=showlast)
+// plotshape(mom_down(0),title= "Bear Mom", style=shape.labeldown, color=color.orange,location=location.abovebar,show_last=showlast)
+// plotshape(indecisive_buy_candle(0),title= "Bull Indecisive", style=shape.circle, color=color.white,location=location.belowbar,show_last=showlast)
+// plotshape(indecisive_sell_candle(0),title= "Bear Indecisive", style=shape.circle, color=color.white,location=location.abovebar,show_last=showlast)
+
+//TODO: bar counter
+isToday(i) =>
+    a = ta.change(time("D"),i) ? 1 : 0
+    a
+noOfBars() =>
+	int counter = 0
+	for i = 1 to 78
+        if isToday(i)
+		    counter := counter + 1
+            // there are 78 5 min candles in a day
+	counter := 78 - counter 
+
+
+print(string txt) =>
+    var table t = table.new(position.middle_right, 1, 1)
+    table.cell(t, 0, 0, txt, bgcolor = color.yellow)
+
+
+
+
+final_plot(x) =>
+    plot_high = (mom_up(x) or indecisive_buy_candle(x)) == 1 ? 1 : 0
+    plot_low = (mom_down(x) or indecisive_sell_candle(x)) == 1 ? 1 : 0
+    result = ((plot_high == 1) ? (1) : ((plot_low == 1) ? (-1) : (0)))
+    result
+
+
+
+plotcandle(open, high, low, close, title="final plot 0", color = (final_plot(0) == 0 ? color.new(#181b23,transparency) : na), wickcolor= (final_plot(0) == 0 ? color.new(#181b23,transparency) : na), bordercolor= (final_plot(0) == 0 ? color.new(#181b23,transparency) : na))
+
+
+

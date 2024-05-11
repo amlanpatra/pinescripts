@@ -1,0 +1,21 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Amlanpatra16
+
+//@version=5
+indicator("ICMC DJ HM",overlay=true)
+
+
+
+ic = (math.abs(open-close) * 2) <= (high - low)
+
+doji = ic ? (open == close) ? 1 :0 :0
+plotshape(doji ,title="Doji",style=shape.xcross,text="DJ",location=location.belowbar,color=color.aqua)
+
+
+hammer = ic ? (((close == high) or (close == low)) ? 1 : 0) : 0
+plotshape(hammer ,title="Hammer",style=shape.xcross,text="HM",location=location.belowbar,color=color.aqua)
+
+
+plotshape(ic and not(hammer or doji),title = "IC",style=shape.xcross,text="IC",location=location.belowbar,color=color.aqua)
+
+plotshape(not (ic),title="MC",style=shape.xcross,text="MC",location=location.belowbar,color=color.green)

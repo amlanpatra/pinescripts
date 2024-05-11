@@ -1,0 +1,77 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Amlanpatra16
+
+//@version=5
+// Here the indicators are made according to Bootcampx training. They are enhanced by zigzag indicator.
+
+indicator("Bootcampx Candlesticks", overlay=true)
+
+average_candleheight_recent_candles = 5
+
+// This is the main from where idea is inspired
+// if redbar and upper_tale > ( 0.5 * candle_length ) and high > hiHighs
+    // label.new(bar_index, high, "Short", yloc = yloc.abovebar, color = color.red, style = label.style_arrowdown)
+candleHeight(i) =>
+    high[i]-low[i]
+bodyHeight(i) =>
+    math.abs(open[i] - close[i])
+upperWick(i) =>
+    if(open[i] <= close[i])
+        high[i] - close[i]
+    else
+        high[i] - open[i]
+lowerWick(i) =>
+    if(open[i] <= close[i])
+        open[i] - low[i]
+    else
+        close[i] - low[i]
+candleisPositive(i) =>
+    if open[i] < close[i] 
+        1
+    else 
+        0
+candleisNegative(i) =>
+    if open[i] > close[i] 
+        1
+    else 
+        0
+
+ic(i) =>
+    res = (math.abs(open[i] - close[i])) <= (high[i] - low[i])/2 ? 1 : 0
+    res
+
+
+
+
+
+
+averageCandleHeight(how_many_candles_back,i) =>
+    // count = 0
+    // candle_height_sum = 0.0
+    // for x = i to how_many_candles_back
+    //     if ic(x)
+    //         count := count + 1
+    //         candle_height_sum := candle_height_sum + candleHeight(x)
+    // res = candle_height_sum/count
+    // res
+    
+    candle_height_sum = 0.0
+    for x = i to how_many_candles_back
+        candle_height_sum := candle_height_sum + candleHeight(x)
+    res = candle_height_sum/how_many_candles_back
+    res
+// Candlestick patterns
+hammer(i) =>
+    // if((candleisPositive(i) or candleisNegative(i)) and ic(i)) and (lowerWick > 2*bodyHeight)
+    if (((lowerWick(i) > 2*bodyHeight(i)) and (upperWick(i) < bodyHeight(i))) and (candleHeight(i) > averageCandleHeight(average_candleheight_recent_candles,i)))
+        1
+    else 
+        0
+
+
+
+
+if hammer(0)
+    label.new(bar_index, high, "Hammer", yloc = yloc.belowbar, color = color.green, style = label.style_arrowup, textcolor=color.white)
+
+

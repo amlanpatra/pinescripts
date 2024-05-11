@@ -1,0 +1,43 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Amlanpatra16
+
+//@version=5
+
+indicator("Candle Shunting 1", overlay=true)
+showlast = input.int(100,"Calculate since last this many candles")
+cs_color = input.color(color.yellow,"Candle Shunting color")
+show_trespassing = input.bool(true,"Show Trespassing")
+positive_candle(x) =>
+    if (close[x] >= open[x]) 
+        1
+    else 
+        0
+negative_candle(x) =>
+    if (close[x] < open[x]) 
+        1
+    else 
+        0
+
+ic(idx) =>
+    res = (math.abs(open[idx] - close[idx])) <= ((high[idx] - low[idx])/2) ? 1 : 0
+    res
+
+
+for i = 100 to 1
+// // // for consecutive positive mc candles
+    if ((not(ic(i))) and positive_candle(i)) and ((not ic(i-1)) and positive_candle(i-1))
+        if open[i-1] <= (close[i] + close[i]*0.01)
+            line.new(bar_index - i-1,close[i],bar_index-i+2,close[i],color=cs_color)
+
+// // for consecutive negative mc candles
+    if (not(ic(i)) and negative_candle(i)) and ((not(ic(i-1))) and negative_candle(i-1))
+        if open[i-1] >= (close[i] - close[i]*0.01)
+            line.new(bar_index - i-1,close[i],bar_index-i+2,close[i],color=cs_color)
+
+
+// // for trespassing
+    // if ((not(ic(i)) and positive_candle(i)) and not(ic(i-1)) and negative_candle(i-1))
+    //    label.new(bar_index-i+1, style=label.style_circle)
+
+
+

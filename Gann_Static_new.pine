@@ -1,0 +1,167 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Amlanpatra16
+
+//@version=4
+study("GANN STATIC",overlay=true)
+
+a = array.new_float(1)
+n = 0
+// price = input(title="Price", type=input.float, defval=17602)
+price = close[0]
+// plot(x, color=color.new(#F4D03F, 10))
+for i = 10 to 100
+    v = 4*(pow((i-1),2)) - 3 * (i-1) + 1
+    if(v>= price)
+        n := i-2
+        break
+    
+
+n:= n+1
+
+deg180_1 =  4*(pow((n-1),2)) - 3 * (n-1) + 1
+deg135_1 = 4*(pow(n,2)) - 10*n + 7
+deg90_1 = 4*(pow(n,2)) - 9*n + 6
+deg45_1 = 4*(pow(n-1,2)) + 1
+deg360_1 = 4*(pow(n,2)) - 7*n + 4
+deg315_1 = 4*(pow(n,2)) - 6*n + 3
+deg270_1 = 4*(pow(n-1,2)) + 3*(n-1) + 1
+deg225_1 = pow((2*(n-1)+1),2)
+
+n := n+1
+
+deg180_2 =  4*(pow((n-1),2)) - 3 * (n-1) + 1
+deg135_2 = 4*(pow(n,2)) - 10*n + 7
+deg90_2 = 4*(pow(n,2)) - 9*n + 6
+deg45_2 = 4*(pow(n-1,2)) + 1
+deg360_2 = 4*(pow(n,2)) - 7*n + 4
+deg315_2 = 4*(pow(n,2)) - 6*n + 3
+deg270_2 = 4*(pow(n-1,2)) + 3*(n-1) + 1
+deg225_2 = pow((2*(n-1)+1), 2)
+
+
+sup = 0.0
+sup := close[0] > deg180_1 ? deg180_1 : sup
+sup := close[0] > deg135_1 ? deg135_1 : sup
+sup := close[0] > deg90_1 ? deg90_1 : sup
+sup := close[0] > deg45_1 ? deg45_1 : sup
+sup := close[0] > deg360_1 ? deg360_1 : sup
+sup := close[0] > deg315_1 ? deg315_1 : sup
+sup := close[0] > deg270_1 ? deg270_1 : sup
+sup := close[0] > deg225_1 ? deg225_1 : sup
+sup := close[0] > deg180_2 ? deg180_2 : sup
+sup := close[0] > deg135_2 ? deg135_2 : sup
+sup := close[0] > deg90_2 ? deg90_2 : sup
+sup := close[0] > deg45_2 ? deg45_2 : sup
+sup := close[0] > deg360_2 ? deg360_2 : sup
+sup := close[0] > deg315_2 ? deg315_2 : sup
+sup := close[0] > deg270_2 ? deg270_2 : sup
+sup := close[0] > deg225_2 ? deg225_2 : sup
+
+res = 0.0
+res := close[0] < deg225_2 ? deg225_2 : res
+res := close[0] < deg270_2 ? deg270_2 : res
+res := close[0] < deg315_2 ? deg315_2 : res
+res := close[0] < deg360_2 ? deg360_2 : res
+res := close[0] < deg45_2 ? deg45_2 : res
+res := close[0] < deg90_2 ? deg90_2 : res
+res := close[0] < deg135_2 ? deg135_2 : res
+res := close[0] < deg180_2 ? deg180_2 : res
+res := close[0] < deg225_1 ? deg225_1 : res
+res := close[0] < deg270_1 ? deg270_1 : res
+res := close[0] < deg315_1 ? deg315_1 : res
+res := close[0] < deg360_1 ? deg360_1 : res
+res := close[0] < deg45_1 ? deg45_1 : res
+res := close[0] < deg90_1 ? deg90_1 : res
+res := close[0] < deg135_1 ? deg135_1 : res
+res := close[0] < deg180_1 ? deg180_1 : res
+
+plot(sup ,color=color.new(#E7BB0D,10),style=plot.style_circles,show_last= 10)
+plot(res ,color=color.new(#E7BB0D,10),style=plot.style_circles,show_last= 10)
+
+
+// plot(deg180_1 ,color=color.new(#E7BB0D,10),style=plot.style_circles,show_last= 10)
+// plot(deg135_1 ,color=color.new(#E7BB0D,10),style=plot.style_circles,show_last= 10)
+// plot(deg90_1 ,color=color.new(#E7BB0D,10),style=plot.style_circles,show_last= 10)
+// plot(deg45_1 ,color=color.new(#E7BB0D,10),style=plot.style_circles,show_last= 10)
+// plot(deg360_1 ,color=color.new(#E7BB0D,10),style=plot.style_circles,show_last= 10)
+// plot(deg315_1 ,color=color.new(#E7BB0D,10),style=plot.style_circles,show_last= 10)
+// plot(deg270_1 ,color=color.new(#E7BB0D,10),style=plot.style_circles,show_last= 10)
+// plot(deg225_1 ,color=color.new(#E7BB0D,10),style=plot.style_circles,show_last= 10)
+// plot(deg180_2 ,color=color.new(#E7BB0D,10),style=plot.style_circles,show_last= 10)
+// plot(deg135_2 ,color=color.new(#E7BB0D,10),style=plot.style_circles,show_last= 10)
+// plot(deg90_2 ,color=color.new(#E7BB0D,10),style=plot.style_circles,show_last= 10)
+// plot(deg45_2 ,color=color.new(#E7BB0D,10),style=plot.style_circles,show_last= 10)
+// plot(deg360_2 ,color=color.new(#E7BB0D,10),style=plot.style_circles,show_last= 10)
+// plot(deg315_2 ,color=color.new(#E7BB0D,10),style=plot.style_circles,show_last= 10)
+// plot(deg270_2 ,color=color.new(#E7BB0D,10),style=plot.style_circles,show_last= 10)
+// plot(deg225_2 ,color=color.new(#E7BB0D,10),style=plot.style_circles,show_last= 10)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// gann_val_arr = array.new_float(17,0)
+
+// array.push(gann_val_arr,price)
+// array.push(gann_val_arr,deg180_1)
+// array.push(gann_val_arr,deg135_1)
+// array.push(gann_val_arr,deg90_1)
+// array.push(gann_val_arr,deg45_1)
+// array.push(gann_val_arr,deg360_1)
+// array.push(gann_val_arr,deg315_1)
+// array.push(gann_val_arr,deg270_1)
+// array.push(gann_val_arr,deg225_1)
+// array.push(gann_val_arr,deg180_2)
+// array.push(gann_val_arr,deg135_2)
+// array.push(gann_val_arr,deg90_2)
+// array.push(gann_val_arr,deg45_2)
+// array.push(gann_val_arr,deg360_2)
+// array.push(gann_val_arr,deg315_2)
+// array.push(gann_val_arr,deg270_2)
+// array.push(gann_val_arr,deg225_2)
+
+
+// array.sort(gann_val_arr, order.ascending)
+// gann_sup = 0.0
+// gann_res = 0.0
+// cur_arr_val = 0.0
+
+// // cur_arr_val := gann_val_arr[2]
+
+// for i = 0 to 17
+//     // cur_arr_val := gann_val_arr[i]
+// 	gann_sup := (cur_arr_val < price) ? 0 : gann_sup
+	
+
+// array.sort(gann_val_arr, order.descending)
+// for i = 0 to 17
+// 	gann_res := iff(gann_val_arr[i]> price,gann_val_arr[i],gann_res)
+
+// plot(gann_sup ,color=color.new(#E7BB0D,10),style=plot.style_circles,show_last= 10)
+// plot(gann_res ,color=color.new(#E7BB0D,10),style=plot.style_circles,show_last= 10)

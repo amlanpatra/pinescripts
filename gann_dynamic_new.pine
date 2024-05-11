@@ -1,0 +1,52 @@
+//@version=4
+// study(title="Pivot Point", shorttitle="Pivot Point", overlay = true)
+// width = input(2, minval=1)
+// xHigh  = security(tickerid,"D", high[1])
+// xLow   = security(tickerid,"D", low[1])
+// xClose = security(tickerid,"D", close[1])
+// vPP = (xHigh+xLow+xClose) / 3
+// vR1 = vPP+(vPP-xLow)
+// vS1 = vPP-(xHigh - vPP)
+// vR2 = vPP + (xHigh - xLow)
+// vS2 = vPP - (xHigh - xLow)
+// vR3 = xHigh + 2 * (vPP - xLow) 
+// vS3 = xLow - 2 * (xHigh - vPP)
+// plot(vS1, color=#ff0000, title="S1", style = circles, linewidth = width)
+// plot(vS2, color=#ff002a, title="S2", style = circles, linewidth = width)
+// plot(vS3, color=#ff014a, title="S3", style = circles, linewidth = width)
+// plot(vR1, color=#009600, title="R1", style = circles, linewidth = width)
+// plot(vR2, color=#006F00, title="R2", style = circles, linewidth = width)
+// plot(vR3, color=#004900, title="R3", style = circles, linewidth = width)
+
+
+
+
+study(title="Recent GANN Dynamic", shorttitle="Gann Dyn", overlay = true, format=format.price,precision=2, resolution="")
+width = input(2, minval=1)
+days = input(3, minval=1)
+// 1 day has 24 candles of 15mins each
+last = 24*days
+xClose = security(syminfo.tickerid,"15", close[0])
+
+
+
+
+cl_sqrt = round(sqrt(close),2)
+// deg45_sup = plot(pow((cl_sqrt + 0.25),2), title='GANN DYN SUP 45', color=#00E676,show_last= last, style = plot.style_circles, linewidth=width)
+deg45_sup =pow((cl_sqrt + 0.25),2)
+plot(deg45_sup, title='GANN DYN SUP 45', color=#00E676,show_last= last, style = plot.style_circles, linewidth=width)
+
+a = array.new_float(24, deg45_sup)
+val = array.avg(a)
+plot(val,title="array a",color = color.maroon,linewidth = 4)
+
+deg45_res = pow((cl_sqrt - 0.25),2)
+plot(deg45_res, title='GANN DYN RES 45', color=#00E676,show_last= last, style = plot.style_circles, linewidth=width)
+
+
+
+
+
+
+
+

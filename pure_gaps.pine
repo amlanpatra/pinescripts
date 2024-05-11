@@ -1,0 +1,43 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Amlanpatra16
+
+//@version=5
+indicator('Pure gaps', overlay=true, max_bars_back=500)
+color_of_gap_and_line = input.color(title="Colour of line and gap", defval = color.white)
+transparency_of_gap = input.int(title="Transparency of gap",defval= 30)
+use_tolerance = input.bool(false,"Use 0.1% Tolerance")
+gap_color = color.new(color_of_gap_and_line,transparency_of_gap)
+cl1_with_tolerance = 0.0
+positive_candle(x) =>
+    if (close[x] >= open[x]) 
+        1
+    else 
+        0
+negative_candle(x) =>
+    if (close[x] < open[x]) 
+        1
+    else 
+        0
+
+if positive_candle(1)
+    if use_tolerance
+        cl1_with_tolerance := close[1] + (close[1]/1000)
+    else
+        cl1_with_tolerance := close[1]
+    if (open[0] > cl1_with_tolerance)
+        l1 = line.new(bar_index-1,close[1],bar_index,close[1],color = color_of_gap_and_line)
+        l2 = line.new(bar_index-1,open[0],bar_index,open[0],color = color_of_gap_and_line)
+        linefill.new(l1,l2,gap_color)
+if negative_candle(1)
+    if use_tolerance
+        cl1_with_tolerance := close[1] - (close[1]/1000)
+    else
+        cl1_with_tolerance := close[1]
+    if (open[0] < cl1_with_tolerance)
+        l1 = line.new(bar_index-1,close[1],bar_index,close[1],color = color_of_gap_and_line)
+        l2 = line.new(bar_index-1,open[0],bar_index,open[0],color = color_of_gap_and_line)
+        linefill.new(l1,l2,gap_color)
+
+// color = color.white, width = line_width
+
+

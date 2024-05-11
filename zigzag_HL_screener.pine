@@ -1,0 +1,147 @@
+//@version=5
+indicator(title="Zigzag HL Screener",overlay=true,max_bars_back = 500)
+prd1 = 8
+
+// print(txt) =>
+//     // var table t = table.new(position.middle_right, 1, 1)
+//     t = table.new(position.middle_left, 1, 1)
+//     // table.cell(t, 0, 0, txt,text_color=color.white, bgcolor = color.black)
+//     table.cell(t, 0, 0, str.tostring(txt),text_color=color.white, bgcolor = color.black)
+
+print(txt) =>
+    input_x_axis = input.string(title="Print label position",defval="Right",options=['Left', 'Center', 'Right'])
+    if input_x_axis == "Left"
+        t = table.new(position.middle_left, 1, 1)
+        table.cell(t, 0, 0, str.tostring(txt),text_color=color.white, bgcolor = color.black)
+    else if (input_x_axis == "Center")
+        t = table.new(position.middle_center, 1, 1)
+        table.cell(t, 0, 0, str.tostring(txt),text_color=color.white, bgcolor = color.black)
+    else
+        t = table.new(position.middle_right, 1, 1)
+        table.cell(t, 0, 0, str.tostring(txt),text_color=color.white, bgcolor = color.black)
+
+
+i_res = input.timeframe('5', "Timeframe")
+
+strict_back_candles = input.bool(true, "Strictly 1st candle")
+
+
+sym1 = input.symbol("NSE:HDFC","Symbol1")
+sym2 = input.symbol("NSE:HINDALCO","Symbol2")
+sym3 = input.symbol("NSE:AXISBANK","Symbol3")
+sym4 = input.symbol("NSE:WIPRO","Symbol4")
+sym5 = input.symbol("NSE:RELIANCE","Symbol5")
+sym6 = input.symbol("NSE:SUNPHARMA","Symbol6")
+sym7 = input.symbol("NSE:SBIN","Symbol7")
+sym8 = input.symbol("NSE:INFY","Symbol8")
+sym9 = input.symbol("NSE:KOTAKBANK","Symbol9")
+sym10 = input.symbol("NSE:BHARTIARTL","Symbol10")
+sym11 = input.symbol("NSE:AUROPHARMA","Symbol11")
+sym12 = input.symbol("NSE:ICICIBANK","Symbol12")
+sym13 = input.symbol("NSE:LUPIN","Symbol13")
+sym14 = input.symbol("NSE:HCLTECH","Symbol14")
+sym15 = input.symbol("NSE:BPCL","Symbol15")
+sym16 = input.symbol("NSE:TATAMOTORS","Symbol16")
+sym17 = input.symbol("NSE:CIPLA","Symbol17")
+sym18 = input.symbol("NSE:HDFCBANK","Symbol18")
+sym19 = input.symbol("NSE:TORNTPHARM","Symbol19")
+sym20 = input.symbol("BANKNIFTYF2022", "Symbol20")
+sym21 = input.symbol("NSE:DIVISLAB","Symbol21")
+sym22 = input.symbol("NSE:DRREDDY","Symbol22")
+sym23 = input.symbol("NSE:HEROMOTOCO","Symbol23")
+sym24 = input.symbol("NSE:HINDUNILVR","Symbol24")
+sym25 = input.symbol("NSE:INDUSINDBK","Symbol25")
+sym26 = input.symbol("NSE:SUNPHARMA","Symbol26")
+sym27 = input.symbol("NSE:SBIN","Symbol27")
+sym28 = input.symbol("NSE:INFY","Symbol28")
+sym29 = input.symbol("NSE:KOTAKBANK","Symbol29")
+sym30 = input.symbol("NSE:BHARTIARTL","Symbol30")
+sym31 = input.symbol("NSE:AUROPHARMA","Symbol31")
+sym32 = input.symbol("NSE:ICICIBANK","Symbol32")
+sym33 = input.symbol("NSE:LUPIN","Symbol33")
+sym34 = input.symbol("NSE:HCLTECH","Symbol34")
+sym35 = input.symbol("NSE:BPCL","Symbol35")
+sym36 = input.symbol("NSE:TATAMOTORS","Symbol36")
+sym37 = input.symbol("NSE:CIPLA","Symbol37")
+sym38 = input.symbol("NSE:HDFCBANK","Symbol38")
+sym39 = input.symbol("NSE:TORNTPHARM","Symbol39")
+sym40 = input.symbol("BANKNIFTYF2022", "Symbol40")
+
+
+
+
+high_or_low() =>
+    // if strict_back_candles
+    //     if ((ta.highestbars(high, prd1) == back_candles) or (ta.lowestbars(low, prd1)) == back_candles)
+    //         1
+    //     else
+    //         0
+    // else
+    //     if ((ta.highestbars(high, prd1) >= back_candles) or (ta.lowestbars(low, prd1)) >= back_candles)
+    //         1
+    //     else
+    //         0
+
+    // if ((ta.highestbars(high, prd1) >= back_candles) or (ta.lowestbars(low, prd1)) >= back_candles)
+    if strict_back_candles
+        if ((ta.highestbars(high, prd1) ==  -1) or (ta.lowestbars(low, prd1)) ==  -1)
+            1
+        else
+            0
+    else
+        if ((ta.highestbars(high, prd1) >=  -1) or (ta.lowestbars(low, prd1)) >=  -1)
+            1
+        else
+            0
+
+
+
+
+final_str = ""
+if strict_back_candles
+    final_str := "H/L : 1\n"
+else
+    final_str := "H/L : 0,1\n"
+
+final_str := request.security(sym1,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym1) + "\n") : final_str
+final_str := request.security(sym2,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym2) + "\n") : final_str
+final_str := request.security(sym3,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym3) + "\n") : final_str
+final_str := request.security(sym4,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym4) + "\n") : final_str
+final_str := request.security(sym5,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym5) + "\n") : final_str
+final_str := request.security(sym6,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym6) + "\n") : final_str
+final_str := request.security(sym7,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym7) + "\n") : final_str
+final_str := request.security(sym8,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym8) + "\n") : final_str
+final_str := request.security(sym9,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym9) + "\n") : final_str
+final_str := request.security(sym10,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym10) + "\n") : final_str
+final_str := request.security(sym11,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym11) + "\n") : final_str
+final_str := request.security(sym12,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym12) + "\n") : final_str
+final_str := request.security(sym13,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym13) + "\n") : final_str
+final_str := request.security(sym14,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym14) + "\n") : final_str
+final_str := request.security(sym15,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym15) + "\n") : final_str
+final_str := request.security(sym16,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym16) + "\n") : final_str
+final_str := request.security(sym17,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym17) + "\n") : final_str
+final_str := request.security(sym18,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym18) + "\n") : final_str
+final_str := request.security(sym19,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym19) + "\n") : final_str
+final_str := request.security(sym20,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym20) + "\n") : final_str
+final_str := request.security(sym21,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym21) + "\n") : final_str
+final_str := request.security(sym22,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym22) + "\n") : final_str
+final_str := request.security(sym23,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym23) + "\n") : final_str
+final_str := request.security(sym24,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym24) + "\n") : final_str
+final_str := request.security(sym25,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym25) + "\n") : final_str
+final_str := request.security(sym26,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym26) + "\n") : final_str
+final_str := request.security(sym27,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym27) + "\n") : final_str
+final_str := request.security(sym28,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym28) + "\n") : final_str
+final_str := request.security(sym29,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym29) + "\n") : final_str
+final_str := request.security(sym30,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym30) + "\n") : final_str
+final_str := request.security(sym31,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym31) + "\n") : final_str
+final_str := request.security(sym32,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym32) + "\n") : final_str
+final_str := request.security(sym33,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym33) + "\n") : final_str
+final_str := request.security(sym34,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym34) + "\n") : final_str
+final_str := request.security(sym35,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym35) + "\n") : final_str
+final_str := request.security(sym36,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym36) + "\n") : final_str
+final_str := request.security(sym37,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym37) + "\n") : final_str
+final_str := request.security(sym38,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym38) + "\n") : final_str
+final_str := request.security(sym39,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym39) + "\n") : final_str
+final_str := request.security(sym40,i_res,high_or_low()) == 1 ? (final_str + str.tostring(sym40) + "\n") : final_str
+
+print(final_str)

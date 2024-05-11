@@ -1,0 +1,79 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Amlanpatra16
+
+//@version=5
+strategy("Hammer Strategy", overlay=true, margin_long=100, margin_short=100)
+// indicator("test Strategy", overlay=true)
+// rcnt_bars = input.int(title="Recent Bars",defval=80,minval=1)
+
+
+candleHeight(i) =>
+    high[i]-low[i]
+bodyHeight(i) =>
+    math.abs(open[i] - close[i])
+upperWick(i) =>
+    if(open[i] <= close[i])
+        high[i] - close[i]
+    else
+        high[i] - open[i]
+lowerWick(i) =>
+    if(open[i] <= close[i])
+        open[i] - low[i]
+    else
+        close[i] - low[i]
+candleisPositive(i) =>
+    if open[i] < close[i] 
+        1
+    else 
+        0
+candleisNegative(i) =>
+    if open[i] > close[i] 
+        1
+    else 
+        0
+
+ic(i) =>
+    res = (math.abs(open[i] - close[i])) <= (high[i] - low[i])/2 ? 1 : 0
+    res
+
+
+
+
+
+
+averageCandleHeight(how_many_candles_back,i) =>
+    // count = 0
+    // candle_height_sum = 0.0
+    // for x = i to how_many_candles_back
+    //     if ic(x)
+    //         count := count + 1
+    //         candle_height_sum := candle_height_sum + candleHeight(x)
+    // res = candle_height_sum/count
+    // res
+    
+    candle_height_sum = 0.0
+    for x = i to how_many_candles_back
+        candle_height_sum := candle_height_sum + candleHeight(x)
+    res = candle_height_sum/how_many_candles_back
+    res
+
+// Candlestick patterns
+hammer(i) =>
+    // if((candleisPositive(i) or candleisNegative(i)) and ic(i)) and (lowerWick > 2*bodyHeight)
+    if (((lowerWick(i) > 2*bodyHeight(i)) and (upperWick(i) < bodyHeight(i))) and (candleHeight(i) > averageCandleHeight(5,i)))
+        1
+    else 
+        0
+
+
+
+
+// sell trade
+if (hammer(0))
+    // sell_entry_price = breakout_price-(breakout_price*0.001)
+    // stop_loss_price = sl_price+(sl_price*0.001)
+    // strategy.entry("Sell", strategy.short,10,limit=sell_entry_price,stop=stop_loss_price)
+    // strategy.exit("Sell exit","Sell",profit=3,trail_price=3)//,loss=5)
+    strategy.entry("Buy", strategy.long,10,limit = high[0],stop=)
+    strategy.exit("Buy exit","Buy",profit=5,trail_price=3,loss=5)
+

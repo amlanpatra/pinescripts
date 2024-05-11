@@ -1,0 +1,51 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Amlanpatra16
+
+//@version=5
+
+indicator("Candle Shunting", overlay=true)
+showlast = input.int(100,"Calculate since last this many candles")
+positive_candle(x) =>
+    if (close[x] >= open[x]) 
+        1
+    else 
+        0
+negative_candle(x) =>
+    if (close[x] < open[x]) 
+        1
+    else 
+        0
+
+ic(idx) =>
+    res = (math.abs(open[idx] - close[idx])) <= (high[idx] - low[idx])/2 ? 1 : 0
+    res
+
+// if not(ic(0))
+bull_mc1 = 0
+bear_mc1 = 0
+for x = showlast to 0
+    if(ic(x))
+        continue
+    else if (positive_candle)
+        bull_mc1 := x
+        break
+for y = showlast to 0
+    if(ic(y))
+        continue
+    else if (negative_candle)
+        bear_mc1 := y
+        break
+
+start_index = bull_mc1 > bear_mc1 ? bull_mc1 : bear_mc1
+
+for i = start_index to 0
+    for j = i to 0
+        if(not(ic(j)) and positive_candle(j))
+            bull_mc1 = j
+        
+
+
+
+
+
+

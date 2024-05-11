@@ -1,0 +1,17 @@
+//@version=5
+indicator(title="Double CCI", format=format.price, precision=2, timeframe="", timeframe_gaps=true)
+length1 = input.int(8, minval=1)
+length2 = input.int(34, minval=1)
+src = input(hlc3, title="Source")
+ma1 = ta.sma(src, length1)
+ma2 = ta.sma(src, length2)
+cci1 = (src - ma1) / (0.015 * ta.dev(src, length1))
+cci2 = (src - ma2) / (0.015 * ta.dev(src, length2))
+// plot(cci1, "CCI", color=#2962FF)
+plot(cci1, "CCI1", color=color.white)
+plot(cci2, "CCI2", color=color.aqua)
+
+
+band1 = hline(100, "Upper Band", color=#787B86, linestyle=hline.style_dashed)
+band0 = hline(-100, "Lower Band", color=#787B86, linestyle=hline.style_dashed)
+fill(band1, band0, color=color.rgb(33, 150, 243, 90), title="Background")

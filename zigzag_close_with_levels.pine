@@ -1,0 +1,83 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Amlanpatra16
+
+//@version=5
+indicator('zz close with Levels/Tracker', overlay=true, max_bars_back=500)
+
+prd2 = input.int(defval=8, title='ZigZag Period', minval=2, maxval=50)
+showzz = input.bool(true,"Show Zigzag")
+upcol2 = input(defval=color.green, title='Zig Zag Up Color')
+dncol2 = input(defval=color.red, title='Zig Zag Down Color')
+
+
+zz2width = input.int(defval=1, title='Zig zag Line Width', minval=1, maxval=6)
+
+tracker_colour = input(defval=color.white,title='Tracker/Levels Colour')
+tracker_style = input.string(defval='Dotted', title='Tracker Style', options=['Normal', 'Dotted', 'Dashed'])
+extend = input.int(defval=100,title="How many candles to extend")
+show_tracker = input.bool(true,"Show Tracker")
+
+
+
+float ph2 = ta.highestbars(close, prd2) == 0 ? close : na
+float pl2 = ta.lowestbars(close, prd2) == 0 ? close : na
+
+var dir1 = 0
+var dir2 = 0
+iff_2 = pl2 and na(ph2) ? -1 : dir2
+dir2 := ph2 and na(pl2) ? 1 : iff_2
+
+var max_array_size = 10  // [5, 2] matrix
+var zigzag1 = array.new_float(0)
+var zigzag2 = array.new_float(0)
+oldzigzag1 = array.copy(zigzag1)
+oldzigzag2 = array.copy(zigzag2)
+
+add_to_zigzag(pointer, value, bindex) =>
+    array.unshift(pointer, bindex)
+    array.unshift(pointer, value)
+    if array.size(pointer) > max_array_size
+        array.pop(pointer)
+        array.pop(pointer)
+
+update_zigzag(pointer, value, bindex, dir) =>
+    if array.size(pointer) == 0
+        add_to_zigzag(pointer, value, bindex)
+    else
+        if dir == 1 and value > array.get(pointer, 0) or dir == -1 and value < array.get(pointer, 0)
+            array.set(pointer, 0, value)
+            array.set(pointer, 1, bindex)
+        0.
+
+dir2changed = ta.change(dir2)
+if ph2 or pl2
+    if dir2changed
+        add_to_zigzag(zigzag2, dir2 == 1 ? ph2 : pl2, bar_index)
+    else
+        update_zigzag(zigzag2, dir2 == 1 ? ph2 : pl2, bar_index, dir2)
+
+
+
+if array.size(zigzag2) >= 6
+    var line zzline2 = na
+    var label zzlabel2 = na
+    var line tracker2 = na
+    if array.get(zigzag2, 0) != array.get(oldzigzag2, 0) or array.get(zigzag2, 1) != array.get(oldzigzag2, 1)
+        if array.get(zigzag2, 2) == array.get(oldzigzag2, 2) and array.get(zigzag2, 3) == array.get(oldzigzag2, 3)
+            line.delete(zzline2)
+            label.delete(zzlabel2)
+            line.delete(tracker2)
+
+        if showzz
+            zzline2 := line.new(x1=math.round(array.get(zigzag2, 1)), y1=array.get(zigzag2, 0), x2=math.round(array.get(zigzag2, 3)), y2=array.get(zigzag2, 2), color=dir2 == 1 ? upcol2 : dncol2, width=zz2width)
+            zzline2
+
+        if show_tracker
+            if tracker_style == 'Normal'
+                tracker2 := line.new(math.round(array.get(zigzag2, 1)),array.get(zigzag2, 0),bar_index+extend,array.get(zigzag2, 0),color=tracker_colour)
+                tracker2
+            
+            else
+                tracker2 := line.new(math.round(array.get(zigzag2, 1)),array.get(zigzag2, 0),bar_index+extend,array.get(zigzag2, 0),color=tracker_colour, style= tracker_style == 'Dashed' ? line.style_dashed :  line.style_dotted)
+                tracker2
+

@@ -1,0 +1,74 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Amlanpatra16
+
+//@version=5
+
+indicator("BNF Max SL Calc", overlay=true)
+
+// input values
+
+maxRisk = input.float(title="Max risk", defval=1000.0, minval=0)
+lotSize = input.int(title="Lot size", defval=15, minval=1)
+isTrackingMarketPrice = input.bool(true, "Track market price", inline = "01")
+desiredPrice = input.float(title="Entry Price", defval=40000.0)
+isBuyTrade = input.bool(true,"Select for Buy, Unselect for Sell", inline = "01")
+
+var entryPrice = isTrackingMarketPrice ? close[1] : desiredPrice
+var tradeType = isBuyTrade ? "BUY" : "SELL"
+
+// plot(close[1])
+
+
+calculateSl(oldMaxRisk, inputlotSize, tradeEntryPrice, inputTradeType)=>
+	var newSl= 0.0
+	var brokerageCharges = 200.0
+	var newMaxRisk = oldMaxRisk - brokerageCharges
+	var breakeven = brokerageCharges/inputlotSize
+	var breakevenPrice = 0.0
+
+	if (inputTradeType == "BUY")
+		newSl := tradeEntryPrice - newMaxRisk/inputlotSize
+		breakevenPrice := tradeEntryPrice + breakeven
+	else 
+		newSl := tradeEntryPrice + newMaxRisk/inputlotSize
+		breakevenPrice := tradeEntryPrice - breakeven
+
+
+    newSl
+	// float[] res = na
+    // array.push(res, newSl)
+	// array.push(res, breakevenPrice)
+	// res
+
+print(txt) =>
+    var table t = table.new(position.middle_right, 1, 1)
+    table.cell(t, 0, 0, string(txt), bgcolor = color.yellow)
+
+
+
+// float[] finalRes = calculateSl(maxRisk,lotSize,close[0],"BUY")
+
+// var plotSlVal = finalRes[0]
+// plot(hline(calculateSl(maxRisk,lotSize,close[0],"BUY"),"SL","red", line.style_dotted))
+
+// res = (request.security("NSE:BANKNIFTY1!", "5", expr))
+plot(calculateSl(maxRisk,lotSize, entryPrice, tradeType), show_last = 20)
+
+// function calculateSl(maxRisk, lotSize, entryPrice, tradeType) {
+//   let newSl;
+//   let brokerageCharges = calculateBrokerage(lotSize, entryPrice);
+//   maxRisk = maxRisk - brokerageCharges;
+//   let breakeven = parseFloat(brokerageCharges) / parseInt(lotSize);
+//   let breakevenPrice;
+
+//   if (tradeType == "BUY") {
+//     newSl = parseFloat(entryPrice) - parseFloat(maxRisk) / parseInt(lotSize);
+//     breakevenPrice = parseFloat(entryPrice) + parseFloat(breakeven);
+//   } else if (tradeType == "SELL") {
+//     newSl = parseFloat(entryPrice) + parseFloat(maxRisk) / parseInt(lotSize);
+//     breakevenPrice = parseFloat(entryPrice) - parseFloat(breakeven);
+//   }
+//   newSl = Math.round(newSl * 100) / 100; // for 2 floating digits
+//   breakevenPrice = Math.round(breakevenPrice * 100) / 100;
+//   return [newSl, breakevenPrice];
+// }
